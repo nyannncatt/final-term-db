@@ -227,10 +227,26 @@
     </section>
     
     <script>
-        function addToCart(productId, productName, price, imgUrl) {
-            // Code to add the product to the cart
-            alert(`${productName} added to cart!`);
-        }
+       function addToCart(productId, productName, price, imgUrl) {
+    // Get existing cart from localStorage or initialize an empty array
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+    // Check if the product is already in the cart
+    const existingProduct = cart.find(item => item.name === productName);
+    if (existingProduct) {
+        existingProduct.quantity += 1; // If the product exists, increase its quantity
+    } else {
+        // If the product doesn't exist, add it to the cart with quantity 1
+        cart.push({ id: productId, name: productName, price: price, image: imgUrl, quantity: 1 });
+    }
+
+    // Save the updated cart to localStorage
+    localStorage.setItem('cart', JSON.stringify(cart));
+
+    // Alert the user
+    alert(`${productName} added to cart!`);
+}
+
     </script>
 </body>
 </html>

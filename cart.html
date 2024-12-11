@@ -130,44 +130,54 @@
     <!-- javascript script file link -->
     <script src="script.js"></script>
 </body>
-<script src="script2.js"></script>
+
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        let cart = JSON.parse(localStorage.getItem('cart')) || [];
-        let cartTableBody = document.querySelector("#cart tbody");
-    
+    // Retrieve the cart from localStorage
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    let cartTableBody = document.querySelector("#cart tbody");
+
+    // Check if the cart is empty
+    if (cart.length === 0) {
+        cartTableBody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Your cart is empty.</td></tr>';
+    } else {
+        // Populate the cart table with data from localStorage
         cart.forEach((item) => {
             let row = `
-    <tr>
-        <td><a href="#" onclick="removeFromCart('${item.name}')"><i class="fas fa-times-circle" style="color:black"></i></a></td>
-        <td><img src="${item.image}" alt="${item.name}"></td>
-        <td>${item.name}</td>
-        <td>$${item.price.toFixed(2)}</td>
-        <td><input type="number" value="${item.quantity}" onchange="updateQuantity('${item.name}', this.value)"></td>
-        <td>$${(item.price * item.quantity).toFixed(2)}</td>
-    </tr>
-`;
+            <tr>
+                <td><a href="#" onclick="removeFromCart('${item.name}')"><i class="fas fa-times-circle" style="color:black"></i></a></td>
+                <td><img src="${item.image}" alt="${item.name}"></td>
+                <td>${item.name}</td>
+                <td>$${item.price.toFixed(2)}</td>
+                <td><input type="number" value="${item.quantity}" onchange="updateQuantity('${item.name}', this.value)"></td>
+                <td>$${(item.price * item.quantity).toFixed(2)}</td>
+            </tr>
+        `;
             cartTableBody.innerHTML += row;
         });
-    });
-    
-    function removeFromCart(name) {
-        let cart = JSON.parse(localStorage.getItem('cart')) || [];
-        cart = cart.filter(item => item.name !== name);
+    }
+});
+
+// Remove item from cart
+function removeFromCart(name) {
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    cart = cart.filter(item => item.name !== name);
+    localStorage.setItem('cart', JSON.stringify(cart));
+    location.reload(); // Refresh the page to update the cart
+}
+
+// Update the quantity of a product in the cart
+function updateQuantity(name, quantity) {
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    let item = cart.find(product => product.name === name);
+    if (item) {
+        item.quantity = parseInt(quantity);
         localStorage.setItem('cart', JSON.stringify(cart));
         location.reload(); // Refresh the page to update cart
     }
-    
-    function updateQuantity(name, quantity) {
-        let cart = JSON.parse(localStorage.getItem('cart')) || [];
-        let item = cart.find(product => product.name === name);
-        if (item) {
-            item.quantity = parseInt(quantity);
-            localStorage.setItem('cart', JSON.stringify(cart));
-            location.reload(); // Refresh the page to update cart
-        }
-    }
+}
+
     </script>
     
 
